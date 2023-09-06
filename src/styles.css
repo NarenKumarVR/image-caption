@@ -1,0 +1,58 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+body {
+  background-color: #d3ebc7;
+}
+.form-inputs {
+  padding: 10px 20px;
+  position: relative;
+}
+.form-inputs .form-control {
+  height: 45px;
+}
+
+.form-inputs .form-control:focus {
+  box-shadow: none;
+  border: 1px solid #000;
+}
+
+.form-inputs i {
+  position: absolute;
+  right: 32px;
+  top: 24px;
+}
+.data_list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 22px;
+}
+.desc {
+  width: 70%;
+}
+
+.Stepper {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.text_area,
+.btn {
+  width: 400px;
+  align-self: center;
+}
+.nav_button {
+  width: 10%;
+  height: 100%;
+}
+
+.carosal {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  gap: 5px;
+  width: 400px;
+}
