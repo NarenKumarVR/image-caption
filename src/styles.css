@@ -3,7 +3,7 @@
   text-align: center;
 }
 body {
-  background-color: #d3ebc7;
+  background-color: #524f4f38;
 }
 .form-inputs {
   padding: 10px 20px;
@@ -34,7 +34,7 @@ body {
 }
 
 .Stepper {
-  padding: 20px;
+  padding: 200px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -55,4 +55,20 @@ body {
   align-self: center;
   gap: 5px;
   width: 400px;
+}
+
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 180px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
 }

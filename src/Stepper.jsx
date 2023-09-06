@@ -4,26 +4,38 @@ const Stepper = ({ data, handleDataChange, currentPageNo, handleSetCurrentPageNo
   const [log, setLog] = useState([]);
 
   const handleNext = () => {
-    setCurrentPage(currentPageNo + 1);
+    handleSetCurrentPageNo(currentPageNo + 1);
   };
   const handlePrevious = () => {
-    setCurrentPage(currentPageNo - 1);
+    handleSetCurrentPageNo(currentPageNo - 1);
   };
   const handleImageSubmit = () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    var raw = {og_path: data[currentPageNo].og_path, desc: data[currentPageNo].desc};
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
+    const apiUrl = `http://localhost:8000/save-data?image_name=${data[currentPageNo].og_path}&description=${data[currentPageNo].desc}`;
+    const requestData = {
+      image_name: data[currentPageNo].og_path,
+      description: data[currentPageNo].desc,
     };
-    fetch("http://localhost:8000/get-data-src?file_path=/Users/enkay/Documents/FordMotors/image-caption/images/Archive.zip", requestOptions)
-      .then(response => response.json())
-      .then(result => setLog([...log, `${data[currentPageNo].img_path} saved in Bigquery Successfully`]))
-      .catch(error => console.log('error', error));
-  };
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(result => {
+        setLog([...log, `${data[currentPageNo].img_path} saved in Bigquery Successfully`]);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    };
   
   return (
     <>
@@ -38,7 +50,7 @@ const Stepper = ({ data, handleDataChange, currentPageNo, handleSetCurrentPageNo
               <i className="bx bx-left-arrow-alt"></i>
             </button>
             
-            <img src={`/${data[currentPageNo].img_path}`} alt="img" width="200px" height="200px"/>    
+            <img src={`/${data[currentPageNo].img_path}`} alt="img" width="200px" height="200px"/>                          
             <button
               className="btn btn-secondary nav_button"
               disabled={currentPageNo === data.length - 1}

@@ -52,25 +52,31 @@ async def save_data_to_bigquery(image_name:str, description:str):
 
 @app.post("/get-data-src")
 async def get_data_from_src(file_path:str):
-    zipDirectory = "/Users/enkay/Documents/FordMotors/image-caption/ReactJS/image-caption/public/images" 
+    if file_path == '':
+        return []
     
-    if os.path.exists(zipDirectory) == False:    
-        Path(zipDirectory).mkdir(parents=True, exist_ok=True)
-        # file_path = str.split(':')[1]
-        with ZipFile(file_path, 'r') as zObject: 
-            zObject.extractall(zipDirectory)
-
-    image_path = []
+    else:
+        zipDirectory = "/Users/enkay/Documents/FordMotors/image-caption/ReactJS/image-caption/public/images" 
         
-    for filename in os.scandir(zipDirectory):
-        if filename.name.endswith('.png') or filename.name.endswith('.jpg') or filename.name.endswith('.JPG') :
-            path = {}
-            path['og_path'] = filename.path
-            path['img_path'] = filename.path.split('/')[-2] + '/' + filename.path.split('/')[-1]
-            path['desc'] = ''
-            image_path.append(path)
-    
-    
-    json_compatible_item_data = jsonable_encoder(image_path)
-    return JSONResponse(content=json_compatible_item_data)
-    # return {image_path}
+        if os.path.exists(zipDirectory) == False:    
+            print('creating folder')
+            Path(zipDirectory).mkdir(parents=True, exist_ok=True)
+            # file_path = str.split(':')[1]
+            with ZipFile(file_path, 'r') as zObject: 
+                zObject.extractall(zipDirectory)
+        else:
+            print('Folder is already present')
+            
+        image_path = []
+        
+        for filename in os.scandir(zipDirectory):
+            if filename.name.endswith('.png') or filename.name.endswith('.jpg') or filename.name.endswith('.JPG') :
+                path = {}
+                path['og_path'] = filename.path
+                path['img_path'] = filename.path.split('/')[-2] + '/' + filename.path.split('/')[-1]
+                path['desc'] = ''
+                image_path.append(path)
+        print(image_path)
+        json_compatible_item_data = jsonable_encoder(image_path)
+        return JSONResponse(content=json_compatible_item_data)
+        # return {image_path}

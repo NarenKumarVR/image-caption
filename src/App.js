@@ -16,6 +16,8 @@ function App() {
   };
 
   const handlePathSubmit = () => {
+    console.log('TESTING>>>', path)
+
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var raw = `${path}`;
@@ -25,16 +27,24 @@ function App() {
       body: raw,
       redirect: 'follow'
     };
-    fetch("http://localhost:8000/get-data-src?file_path=/Users/enkay/Documents/FordMotors/image-caption/images/Archive.zip", requestOptions)
+    fetch(`http://localhost:8000/get-data-src?file_path=${path}`, requestOptions)
       .then(response => response.json())
       .then(result => setData(result))
       .catch(error => console.log('error', error));
+    setIsListView(true)
   };
 
   const handleListClick = (index) => {
     setCurrentPageNo(index);
     setIsListView(false);
   };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        handlePathSubmit()
+    }
+  }
+  
   
   return (
     <div className="App">
@@ -45,14 +55,16 @@ function App() {
           placeholder="Path..."
           value={path}
           onChange={(e) => setPath(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
-        <i class="bx bx-search" onClick={handlePathSubmit}></i>
+        <i class="bx bx-search" onClick={handlePathSubmit}>
+        </i>
       </div>
       {data &&
         isListView &&
         data.map((d, index) => {
           return (
-            <div className="data_list" onClick={() => handleListClick(index)}>
+            <div className="gallery" onClick={() => handleListClick(index)}>
               <img src={d.img_path} alt="img" width="80px" height="80px" />
               <div className="desc">{d.desc}</div>
             </div>
