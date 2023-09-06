@@ -5,7 +5,9 @@ import axios from "axios";
 function App() {
   const [path, setPath] = useState("");
   const [data, setData] = useState([]);
-
+  const [currentPageNo, setCurrentPageNo] = useState(0);
+  const [isListView, setIsListView] = useState(true);
+  
   const handleDataChange = (description, index) => {
     let clone = [...data];
     clone[index]["desc"] = description;
@@ -13,72 +15,57 @@ function App() {
   };
 
   const handlePathSubmit = () => {
-    console.log("TESTING >>> 1", path);
-    
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var raw = `${path}`;
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    fetch("http://localhost:8000/get-data-src?file_path=/Users/enkay/Documents/FordMotors/image-caption/images/Archive.zip", requestOptions)
+      .then(response => response.json())
+      .then(result => setData(result))
+      .catch(error => console.log('error', error));
+  };
+
+  const handleListClick = (index) => {
+    setCurrentPageNo(index);
+    setIsListView(false);
+  };
   
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  var raw = `${path}`;
-  var requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
-  };
-  fetch("http://localhost:8000/get-data-src?file_path=/Users/enkay/Documents/FordMotors/image-caption/images/Archive.zip", requestOptions)
-    .then(response => response.json())
-    .then(result => setData(result))
-    .catch(error => console.log('error', error));
-
-    // // var payload = `file-path: ${path}`;
-    // // var data = '"file-path": "/Users/enkay/Documents/FordMotors/image-caption/FastAPI/public/Archive.zip"';
-    // // var turl = 'http://127.0.0.1:8000/get-data-src?file_path=' + payload
-    // // console.log(turl);
-    // // var config = {
-    // //   method: "POST",
-    // //   url: turl,
-    // //   headers: { 
-    // //     "Content-Type": "application/json",
-    // //     "Access-Control-Allow-Origin" : "*",
-    // //     'Access-Control-Max-Age': "10",
-    // //     'Content-Type': 'application/json',
-    // //     'Access-Control-Allow-Credentials': 'true',
-    // //   },
-    // //   body : JSON.stringify(payload),    
-    // // };
-    
-    // // axios(config)
-    // // .then(function (response) {
-    // //   console.log(JSON.stringify(response.data));
-    // // })
-    // // .catch(function (error) {
-    //   console.log(error);
-    // });
-
-    // setData([
-    //   {
-    //     img_path:
-    //       "/Users/enkay/Documents/FordMotors/image-caption/ReactJS/image-caption/public/zipped/logo512.png",
-    //     desc: ""
-    //   },
-    //   {
-    //     img_path:
-    //       "/Users/enkay/Documents/FordMotors/image-caption/ReactJS/image-caption/public/zipped/logo192.png",
-    //     desc: ""
-    //   }
-    // ]);
-  };
-
   return (
     <div className="App">
-      <input
-        placeholder="Description"
-        value={path}
-        onChange={(e) => setPath(e.target.value)}
-      />
-      <button onClick={handlePathSubmit}>Path Submit</button>
-
-      {data&&<Stepper data={data} handleDataChange={handleDataChange} />}
+      <div className="d-flex form-inputs">
+        <input
+          className="form-control"
+          type="text"
+          placeholder="Path..."
+          value={path}
+          onChange={(e) => setPath(e.target.value)}
+        />
+        <i class="bx bx-search" onClick={handlePathSubmit}></i>
+      </div>
+      {data &&
+        isListView &&
+        data.map((d, index) => {
+          return (
+            <div className="data_list" onClick={() => handleListClick(index)}>
+              <img src={d.img_path} alt="img" width="80px" height="80px" />
+              <div className="desc">{d.desc}</div>
+            </div>
+          );
+        })
+      }
+      {!isListView && (
+        <Stepper
+          data={data}
+          handleDataChange={handleDataChange}
+          currentPageNo={currentPageNo}
+          handleSetCurrentPageNo={setCurrentPageNo}
+        />
+      )}
     </div>
   );
 }
