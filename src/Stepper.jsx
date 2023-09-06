@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
-const Stepper = ({ data, handleDataChange }) => {
-  const [currentPageNo, setCurrentPage] = useState(0);
-  
+const Stepper = ({ data, handleDataChange, currentPageNo, handleSetCurrentPageNo }) => {
   const [log, setLog] = useState([]);
 
   const handleNext = () => {
@@ -12,8 +10,6 @@ const Stepper = ({ data, handleDataChange }) => {
     setCurrentPage(currentPageNo - 1);
   };
   const handleImageSubmit = () => {
-    // data[currentPageNo].img_path,
-    // data[currentPageNo].desc,
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var raw = {og_path: data[currentPageNo].og_path, desc: data[currentPageNo].desc};
@@ -28,27 +24,38 @@ const Stepper = ({ data, handleDataChange }) => {
       .then(result => setLog([...log, `${data[currentPageNo].img_path} saved in Bigquery Successfully`]))
       .catch(error => console.log('error', error));
   };
+  
   return (
     <>
       {data.length ? (
-        <div>        
+        <div className="Stepper">   
+          <div className="carosal">
+            <button
+              className="btn btn-secondary nav_button"
+              disabled={currentPageNo === 0}
+              onClick={handlePrevious}
+            >
+              <i className="bx bx-left-arrow-alt"></i>
+            </button>
+            
             <img src={`/${data[currentPageNo].img_path}`} alt="img" width="200px" height="200px"/>    
-
-          <input
+            <button
+              className="btn btn-secondary nav_button"
+              disabled={currentPageNo === data.length - 1}
+              onClick={handleNext}
+            >
+              <i className="bx bx-right-arrow-alt"></i>
+            </button>
+          </div>
+          <textarea
+            className="form-control text_area"
             placeholder="Image Description"
             value={data[currentPageNo].desc}
             onChange={(e) => handleDataChange(e.target.value, currentPageNo)}
           />
-          <button disabled={currentPageNo === 0} onClick={handlePrevious}>
-            Previous
+          <button class="btn btn-primary" onClick={handleImageSubmit}>
+            Submit
           </button>
-          <button
-            disabled={currentPageNo === data.length - 1}
-            onClick={handleNext}
-          >
-            Next
-          </button>
-          <button onClick={handleImageSubmit}>Submit</button>
         </div>
       ) : (
         <></>
