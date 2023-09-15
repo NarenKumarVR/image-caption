@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Stepper from "./Stepper";
-import axios from "axios";
 import "./styles.css";
 
 function App() {
@@ -44,7 +43,7 @@ function App() {
         handlePathSubmit()
     }
   }
-  
+
   
   return (
     <div className="App">
