@@ -72,3 +72,8 @@ div.gallery img {
   width: 100%;
   height: auto;
 }
+
+.action_btn_grp {
+  display: flex;
+  gap: 8px;
+}
